@@ -1,0 +1,2 @@
+debian/bin/RUCoind usr/bin
+src/RUCoind usr/lib/RUCoin

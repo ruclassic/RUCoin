@@ -1,0 +1,9 @@
+Building RUCoin
+
+See doc/readme-qt.rst for instructions on building RUCoin Qt,
+the intended-for-end-users, nice-graphical-interface, reference
+implementation of RUCoin.
+
+See doc/build-*.txt for instructions on building RUCoind,
+the intended-for-services, no-graphical-interface, reference
+implementation of RUCoin.

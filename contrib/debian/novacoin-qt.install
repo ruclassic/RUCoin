@@ -1,0 +1,5 @@
+RUCoin-qt usr/bin
+share/pixmaps/RUCoin32.xpm usr/share/pixmaps
+share/pixmaps/RUCoin80.xpm usr/share/pixmaps
+debian/RUCoin-qt.desktop usr/share/applications
+debian/RUCoin-qt.protocol usr/share/kde4/services/

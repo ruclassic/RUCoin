@@ -1,0 +1,11 @@
+[Unit]
+Description=RUCoin daemon serivce
+After=network.target
+
+[Service]
+Type=simple
+User=RUCoin
+ExecStart=/opt/RUCoin/RUCoind
+
+[Install]
+WantedBy=multi-user.target

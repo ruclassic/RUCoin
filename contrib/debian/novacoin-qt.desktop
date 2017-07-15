@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=RUCoin
+Comment=RUCoin P2P Cryptocurrency
+Comment[ru]=RUCoin, P2P криптовалюта
+Comment[fr]=RUCoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=RUCoin, eşten eşe kriptografik sanal para birimi
+Exec=/usr/bin/RUCoin-qt
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/RUCoin80.xpm
+MimeType=x-scheme-handler/RUCoin;
+Categories=Office;

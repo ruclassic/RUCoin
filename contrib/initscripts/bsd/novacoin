@@ -1,0 +1,68 @@
+#!/bin/sh
+
+# PROVIDE: RUCoin
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+#
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable this service:
+#
+# RUCoin_enable (bool): Set to NO by default. Set this variable to YES if you want to enable RUCoin service.
+# RUCoin_config (path): Set to /usr/local/etc/RUCoin.conf by default.
+# RUCoin_user:  The user account RUCoin daemon runs as. It uses 'root' user by default.
+# RUCoin_group: The group account RUCoin daemon runs as. It uses 'wheel' group by default.
+# RUCoin_datadir (str): Default to "/var/db/RUCoin". Base data directory.
+
+. /etc/rc.subr
+
+name=RUCoin
+rcvar=RUCoin_enable
+
+: ${RUCoin_enable:=NO}
+: ${RUCoin_config=/usr/local/etc/RUCoin.conf}
+: ${RUCoin_datadir=/var/db/RUCoin}
+: ${RUCoin_user="root"}
+: ${RUCoin_group="wheel"}
+
+required_files=${RUCoin_config}
+command=/usr/local/bin/RUCoind
+RUCoin_chdir=${RUCoin_datadir}
+pidfile="${RUCoin_datadir}/RUCoind.pid"
+stop_cmd=RUCoin_stop
+command_args="-conf=${RUCoin_config} -datadir=${RUCoin_datadir} -daemon -pid=${pidfile}"
+start_precmd="${name}_prestart"
+
+RUCoin_create_datadir()
+{
+	echo "Creating data directory"
+	eval mkdir -p ${RUCoin_datadir}
+	[ $? -eq 0 ] && chown -R ${RUCoin_user}:${RUCoin_group} ${RUCoin_datadir}
+}
+
+RUCoin_prestart()
+{
+	if [ ! -d "${RUCoin_datadir}/." ]; then
+		RUCoin_create_datadir || return 1
+	fi
+}
+
+RUCoin_requirepidfile()
+{
+	if [ ! "0`check_pidfile ${pidfile} ${command}`" -gt 1 ]; then
+		echo "${name} not running? (check $pidfile)."
+		exit 1
+	fi
+}
+
+RUCoin_stop()
+{
+    RUCoin_requirepidfile
+
+	echo "Stopping ${name}."
+	eval ${command} -conf=${RUCoin_config} -datadir=${RUCoin_datadir} stop
+	wait_for_pids ${rc_pid}
+}
+
+load_rc_config $name
+run_rc_command "$1"
