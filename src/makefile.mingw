@@ -3,14 +3,16 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 USE_LEVELDB:=0
-CC=gcc
+CC=$(CROSS)gcc
+CXX=$(CROSS)g++
 
-USE_ASM:=1
+USE_ASM:=0
 USE_IPV6:=1
 USE_SSE2:=1
 
-//BOOST_SUFFIX?=-mgw49-mt-s-1_57
-BOOST_SUFFIX? = - mgw49-mt-s-1_57
+
+BOOST_SUFFIX?=-mgw49-mt-s-1_57
+
 
 INCLUDEPATHS= \
  -I"$(CURDIR)" \
@@ -102,7 +104,8 @@ DEFS += $(addprefix -I,$(CURDIR)/leveldb/include) -DUSE_LEVELDB
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/helpers)
 OBJS += obj/txdb-leveldb.o
 leveldb/libleveldb.a:
-	cd leveldb; TARGET_OS=NATIVE_WINDOWS make libleveldb.a libmemenv.a; cd ..
+	cd leveldb; TARGET_OS=NATIVE_WINDOWS make CROSS=i686-w64-mingw32.static- libleveldb.a libmemenv.a; cd ..
+
 obj/txdb-leveldb.o: leveldb/libleveldb.a
 else
 OBJS += obj/txdb-bdb.o
@@ -140,7 +143,7 @@ else
 ifdef USE_SSE2
 # Intrinsic implementation
 DEFS += -DUSE_SSE2
-OBJS += scrypt-intrin/obj/scrypt-sse2.o
+OBJS += crypto/scrypt/intrin/obj/scrypt-sse2.o
 
 crypto/scrypt/intrin/obj/scrypt-sse2.o: crypto/scrypt/intrin/scrypt-sse2.cpp
 	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
@@ -155,10 +158,11 @@ endif
 
 
 obj/%.o: %.cpp $(HEADERS)
-	g++ -c $(CFLAGS) -o $@ $<
+	$(CXX) -c $(CFLAGS) -o $@ $<
 
 RUCoind.exe: $(OBJS:obj/%=obj/%)
-	g++ $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
+	#g++ $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
+	$(CXX) $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
 
 clean:
 	-del /Q RUCoind
